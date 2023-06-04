@@ -1,6 +1,6 @@
 package demo.testing.v1;
 
-import demo.testing.entity.Sample;
+import demo.testing.entity.ReflectionEntity;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Description;
@@ -13,46 +13,46 @@ import java.util.HashSet;
 import java.util.Set;
 
 @SpringBootTest
-public class EntityTest {
+public class ReflectionEntityTest {
 
-    private Sample getEntity() {
-        Sample sample = new Sample();
-        sample.setId("1");
-        sample.setName("Lee");
-        sample.setAddress(11);
-        return sample;
+    private ReflectionEntity getEntity() {
+        ReflectionEntity reflectionEntity = new ReflectionEntity();
+        reflectionEntity.setId("1");
+        reflectionEntity.setName("Lee");
+        reflectionEntity.setAddress(11);
+        return reflectionEntity;
     }
 
     @Test
     @Description("변경된 엔티티 필드만큼 객체를 생성하는 소스")
     void 엔티티변경() throws IllegalAccessException {
-        Sample originalEntity = getEntity(); // 기존 엔티티
-        Sample changeEntity = getChangeEntity(); // 변경되어 넘어온 엔티티
+        ReflectionEntity originalEntity = getEntity(); // 기존 엔티티
+        ReflectionEntity changeEntity = getChangeEntity(); // 변경되어 넘어온 엔티티
 
-        ArrayList<Sample> list = new ArrayList<>(); // 변경된 엔티티 리스트
+        ArrayList<ReflectionEntity> list = new ArrayList<>(); // 변경된 엔티티 리스트
         Field[] fields = originalEntity.getClass().getDeclaredFields();
         for (Field field : fields) {
             field.setAccessible(true);
-            Sample sampleEntity = getSampleEntity(originalEntity); // 기존 엔티티를 새로생성한 엔티티에 복사
+            ReflectionEntity reflectionEntityEntity = getSampleEntity(originalEntity); // 기존 엔티티를 새로생성한 엔티티에 복사
 
             if (!field.get(originalEntity).equals(field.get(changeEntity))) {
                 System.out.println("수정된 field name => " + field.getName());
-                field.set(sampleEntity, field.get(changeEntity));
-                list.add(sampleEntity);
+                field.set(reflectionEntityEntity, field.get(changeEntity));
+                list.add(reflectionEntityEntity);
             }
         }
     }
 
-    private static Sample getSampleEntity(Sample originalEntity) {
-        Sample sampleEntity = new Sample();
-        sampleEntity.setId(originalEntity.getId());
-        sampleEntity.setName(originalEntity.getName());
-        sampleEntity.setAddress(originalEntity.getAddress());
-        return sampleEntity;
+    private static ReflectionEntity getSampleEntity(ReflectionEntity originalEntity) {
+        ReflectionEntity reflectionEntityEntity = new ReflectionEntity();
+        reflectionEntityEntity.setId(originalEntity.getId());
+        reflectionEntityEntity.setName(originalEntity.getName());
+        reflectionEntityEntity.setAddress(originalEntity.getAddress());
+        return reflectionEntityEntity;
     }
 
-    private static Sample getChangeEntity() {
-        Sample changeEntity = new Sample();
+    private static ReflectionEntity getChangeEntity() {
+        ReflectionEntity changeEntity = new ReflectionEntity();
         changeEntity.setId("1");
         changeEntity.setName("Hong");
         changeEntity.setAddress(3);
@@ -61,14 +61,14 @@ public class EntityTest {
 
     @Test
     void entityTest() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Sample originalEntity = getEntity();
+        ReflectionEntity originalEntity = getEntity();
 
-        Sample sampleEntity = new Sample();
-        sampleEntity.setId("2");
-        sampleEntity.setName("Lee1");
-        sampleEntity.setAddress(3);
+        ReflectionEntity reflectionEntityEntity = new ReflectionEntity();
+        reflectionEntityEntity.setId("2");
+        reflectionEntityEntity.setName("Lee1");
+        reflectionEntityEntity.setAddress(3);
 
-        Method[] methods = Sample.class.getMethods();
+        Method[] methods = ReflectionEntity.class.getMethods();
 
         Set<String> getters = new HashSet<>();
         Set<String> setters = new HashSet<>();
@@ -81,13 +81,13 @@ public class EntityTest {
         }
 
 
-        ArrayList<Sample> list = new ArrayList<>();
+        ArrayList<ReflectionEntity> list = new ArrayList<>();
         for (String getter : getters) {
             getSampleEntity(originalEntity);
 
-            Method fieldGetter = Sample.class.getMethod(getter);
+            Method fieldGetter = ReflectionEntity.class.getMethod(getter);
             Object originalValue = fieldGetter.invoke(originalEntity);
-            Object newValue = fieldGetter.invoke(sampleEntity);
+            Object newValue = fieldGetter.invoke(reflectionEntityEntity);
 
             if (!originalValue.equals(newValue)) {
                 String get = getter.replace("get", "");

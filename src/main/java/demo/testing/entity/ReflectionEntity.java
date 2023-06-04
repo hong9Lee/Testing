@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Sample {
+public class ReflectionEntity {
 
     private String id;
     private String name;
