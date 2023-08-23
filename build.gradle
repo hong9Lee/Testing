@@ -1,18 +1,44 @@
 plugins {
 	id 'java'
+	id 'java-library'
 	id 'org.springframework.boot' version '3.0.5'
 	id 'io.spring.dependency-management' version '1.1.0'
 }
 
-group = 'demo'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '17'
+//group = 'demo'
+//version = '0.0.1-SNAPSHOT'
+//sourceCompatibility = '17'
 
-repositories {
-	mavenCentral()
+allprojects {
+	apply plugin: 'java'
+	apply plugin: 'java-library'
+	apply plugin: 'org.springframework.boot'
+	apply plugin: 'io.spring.dependency-management'
+
+	java {
+		sourceCompatibility = JavaVersion.VERSION_17
+		targetCompatibility = JavaVersion.VERSION_17
+	}
+
+	repositories {
+		mavenCentral()
+		maven { url "https://jitpack.io" }
+		def hongGyuPackages = ['lib-utils']
+		hongGyuPackages.each { repoName ->
+			{
+				maven {
+					name = "GitHubPackages_${repoName}"
+					url = uri("https://maven.pkg.github.com/hong9Lee/${repoName}")
+				}
+			}
+		}
+	}
 }
 
+
+
 dependencies {
+	implementation 'com.github.hong9Lee:lib-utils:v1.0.2'
 	implementation 'org.springframework.boot:spring-boot-starter'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	// Lombok dependencies
